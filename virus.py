@@ -2,32 +2,45 @@
 from gtts import gTTS
 import os
 
-#from requests.packages.urllib3.exceptions import InsecureRequestWarning
-
 ### SETTINGS
 audiofile_name = 'audio.mp3'
 audio_text = 'You have downloaded ransomware'
+audio_folder = '.audio'
 # Ways to play mp3
-play_options = ['webbrowser', 'mpg123', 'pygame']
-
+play_options_priority = ['vlc', 'pygame', 'webbrowser', 'mpg123']
 
 working_directory = os.path.dirname(__file__)
-mp3_path = '/'.join([working_directory, audiofile_name])
- 
-tts = gTTS(text=audio_text, lang='en')
-tts.save(mp3_path)
+mp3_path = '/'.join([working_directory, audio_folder, audiofile_name])
 
-for play_option in play_options:
-    try:
-        if play_option == 'webbrowser':
-            import webbrowser
-            webbrowser.open(mp3_path)
-        elif play_option == 'mpg123':
-            os.system("mpg123 {}".format(mp3_path))
-        elif play_option == 'pygame':
-            raise NotImplementedError
-            #from pygame import mixer # Load the required library
-        break
-    except Exception as e:
-        print('Exception: {}'.format(e))
-        continue
+def create_audio(audio_text, mp3_path):
+    tts = gTTS(text=audio_text, lang='en')
+    tts.save(mp3_path)
+
+def play_audio(mp3_path):
+    for play_option in play_options_priority:
+        print(play_option)
+        try:
+            if play_option == 'vlc':
+                os.system('vlc --qt-start-minimized --play-and-exit {}'.format(mp3_path))
+            elif play_option == 'webbrowser':
+                import webbrowser
+                webbrowser.open(mp3_path)
+                #subprocess.run(["ls", "-l"])
+            elif play_option == 'mpg123':
+                os.system("mpg123 {}".format(mp3_path))
+            elif play_option == 'pygame':
+                raise NotImplementedError
+            break
+        except Exception as e:
+            print('Exception: {}'.format(e))
+            continue
+
+def create_and_play(audio_text):
+    create_audio(audio_text, mp3_path)
+    play_audio(mp3_path)
+
+def main():
+    create_and_play('This is a sample test to speech input.')
+
+if __name__ == '__main__':
+    main()
