@@ -40,7 +40,16 @@ def create_and_play(audio_text):
     play_audio(mp3_path)
 
 def main():
-    create_and_play('This is a sample test to speech input.')
+#    create_and_play('This is a sample test to speech input.')
+    files_to_encrypt = list_files(os.path.join(working_directory, 'Totally_Secret_Folder'))
+#    print(next(files_to_encrypt))
+    while True:
+        try:
+            print(next(files_to_encrypt))
+        except Exception as e:
+            print('Exception: {}'.format(e))
+            break
+#    print()
 
 if __name__ == '__main__':
     main()
